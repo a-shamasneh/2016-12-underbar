@@ -230,21 +230,6 @@
 
 
     },false)
-
-    // if(collection.length<1){
-    //   return false;
-    // }
-
-    // if(_.indexOf(collection,true)>-1){
-    //   return true;
-    // }
-    // if(_.indexOf(collection,"yes")>-1){
-    //   return true;
-    // }
-
-
-    //   return _.every(collection,iterator);
-    
     
     
 
@@ -271,11 +256,30 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    // var destination = {};
+    var source = arguments[0];
+    _.each(arguments, function (value,i) {
+      _.each(value, function (ele, key) {
+        
+          source[key] = ele;
+        
+      })
+    })
+    return source;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var source = arguments[0];
+    _.each(arguments, function (value,i) {
+      _.each(value, function (ele, key) {
+        if (source[key] === undefined) {
+          source[key] = ele;          
+        }
+      })
+    })
+    return source;
   };
 
 
@@ -319,6 +323,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var history={};
+    return function(){
+      var h=JSON.stringify(arguments);
+      if(history[h]==undefined){
+        return history[h]=func.apply(this,arguments);
+      }  
+      return history[h];
+    }
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -328,6 +341,9 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+      var t=Array.from(arguments);
+     return setTimeout(function(){func.apply(this,t.slice(2))},wait);
+
   };
 
 
@@ -342,6 +358,12 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newArray = [];
+    _.each(array, function (ele, i) {
+       newArray.push(ele);
+       newArray.sort();
+    })
+    return newArray;
   };
 
 
@@ -356,6 +378,14 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    _.each(collection,function(elem,i){
+      if(typeof(functionOrKey)=="string"){
+     return elem[functionOrKey].apply(elem,args)
+      }
+    return  functionOrKey.apply(elem, args)
+     console.log(functionOrKey.apply(elem, args))
+      
+    })
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -371,6 +401,15 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+  //   var newArr = [];
+  // for (var i = 0; i < array1.length; i++) {
+  //   newArr.push(array1[i])
+  // }
+  // for (var i = 0; i < array2.length; i++) {
+  //   newArr.push(array2[i])
+  // }
+  // return newArr;
+
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
